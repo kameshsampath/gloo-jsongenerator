@@ -10,6 +10,8 @@ import (
 	meshEntNetworkv1beta1 "github.com/solo-io/gloo-mesh/pkg/api/networking.enterprise.mesh.gloo.solo.io/v1beta1"
 	meshNetworkv1 "github.com/solo-io/gloo-mesh/pkg/api/networking.mesh.gloo.solo.io/v1"
 	glooRbacv1 "github.com/solo-io/gloo-mesh/pkg/api/rbac.enterprise.mesh.gloo.solo.io/v1"
+	glooGatewayv1 "github.com/solo-io/solo-apis/pkg/api/gateway.solo.io/v1"
+	gloov1 "github.com/solo-io/solo-apis/pkg/api/gloo.solo.io/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -170,9 +172,16 @@ func main() {
 	os.Mkdir("networking.mesh.gloo.solo.io", os.ModePerm)
 	os.Mkdir("rbac.enterprise.mesh.gloo.solo.io", os.ModePerm)
 	os.Mkdir("networking.enterprise.mesh.gloo.solo.io", os.ModePerm)
+	os.Mkdir("gloo.solo.io", os.ModePerm)
+	os.Mkdir("gateway.solo.io", os.ModePerm)
+	// Gloo Mesh
 	dump(&meshNetworkv1.AccessPolicy{}, "networking.mesh.gloo.solo.io/v1", "AccessPolicy")
 	dump(&meshNetworkv1.TrafficPolicy{}, "networking.mesh.gloo.solo.io/v1", "TrafficPolicy")
 	dump(&glooRbacv1.Role{}, "rbac.enterprise.mesh.gloo.solo.io/v1", "Role")
 	dump(&glooRbacv1.RoleBinding{}, "rbac.enterprise.mesh.gloo.solo.io/v1", "RoleBinding")
 	dump(&meshEntNetworkv1beta1.VirtualDestination{}, "networking.enterprise.mesh.gloo.solo.io/v1beta1", "VirtualDestination")
+	//Gloo Edge
+	dump(&gloov1.Upstream{}, "gloo.solo.io/v1", "Upstream")
+	dump(&glooGatewayv1.VirtualService{}, "gateway.solo.io/v1", "VirtualService")
+	dump(&glooGatewayv1.Gateway{}, "gateway.solo.io/v1", "Gateway")
 }
