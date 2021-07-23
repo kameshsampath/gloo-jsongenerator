@@ -8,6 +8,7 @@ package jsonschema
 
 import (
 	"encoding/json"
+	"github.com/iancoleman/strcase"
 	"net"
 	"net/url"
 	"reflect"
@@ -74,6 +75,12 @@ type Type struct {
 	BinaryEncoding string `json:"binaryEncoding,omitempty"` // section 4.3
 
 	Extras map[string]interface{} `json:"-"`
+}
+
+func init() {
+	strcase.ConfigureAcronym("API", "api")
+	strcase.ConfigureAcronym("APIVersion", "apiVersion")
+	strcase.ConfigureAcronym("UID", "uid")
 }
 
 // Reflect reflects to Schema from a value using the default Reflector
@@ -554,6 +561,14 @@ func ignoredByJSONSchemaTags(tags []string) bool {
 
 func (r *Reflector) reflectFieldName(f reflect.StructField) (string, bool, bool) {
 	jsonTags, exist := f.Tag.Lookup("json")
+	// check if the protobuf tag has json=<name>, then use that over
+	// json tags name
+	protobufTags, protoTagsExist := f.Tag.Lookup("protobuf")
+	var protoJsonName string
+	if protoTagsExist && strings.Contains(protobufTags, "json=") {
+		protoJsonName = f.Name
+	}
+
 	if !exist {
 		jsonTags = f.Tag.Get("yaml")
 	}
@@ -569,14 +584,15 @@ func (r *Reflector) reflectFieldName(f reflect.StructField) (string, bool, bool)
 		return "", exist, false
 	}
 
-	name := f.Name
+	name := strcase.ToLowerCamel(f.Name)
+
 	required := requiredFromJSONTags(jsonTagsList)
 
 	if r.RequiredFromJSONSchemaTags {
 		required = requiredFromJSONSchemaTags(jsonSchemaTags)
 	}
 
-	if jsonTagsList[0] != "" {
+	if protoJsonName == "" && jsonTagsList[0] != "" {
 		name = jsonTagsList[0]
 	}
 
@@ -594,7 +610,6 @@ func (r *Reflector) reflectFieldName(f reflect.StructField) (string, bool, bool)
 		name = ""
 		exist = false
 	}
-
 	return name, exist, required
 }
 

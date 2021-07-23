@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/iancoleman/orderedmap v0.2.0
+	github.com/iancoleman/strcase v0.1.3
 	github.com/solo-io/gloo-mesh v1.0.11
 	k8s.io/api v0.21.0 // indirect
 	k8s.io/apiextensions-apiserver v0.21.3

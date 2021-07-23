@@ -175,5 +175,4 @@ func main() {
 	dump(&glooRbacv1.Role{}, "rbac.enterprise.mesh.gloo.solo.io/v1", "Role")
 	dump(&glooRbacv1.RoleBinding{}, "rbac.enterprise.mesh.gloo.solo.io/v1", "RoleBinding")
 	dump(&meshEntNetworkv1beta1.VirtualDestination{}, "networking.enterprise.mesh.gloo.solo.io/v1beta1", "VirtualDestination")
-
 }
